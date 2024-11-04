@@ -11,16 +11,20 @@ def main():
         for line in file:
             board.append(list(line.rstrip()))
 
-    # XCount = 0
-    # OCount = 0
-    # for row in board:
-    #     XCount += row.count('X')
-    #     OCount += row.count('O')
+    XCount = 0
+    OCount = 0
+    for row in board:
+        XCount += row.count('X')
+        OCount += row.count('O')
     #
     # if abs(XCount - OCount) > 1:
     #     return -1
 
-    count, win, nextMove = Max(board)
+    if XCount == OCount:
+        count, win, nextMove = Max(board)
+    else:
+        count, win, nextMove = Min(board)
+
     print(count)
     print(win)
     print(nextMove)
@@ -133,6 +137,110 @@ def winState(board, player):
                     return 1
 
     return -1
+
+def possibleWins(board, player):
+    placedPieces = []
+    for row in board:
+        placed = []
+        for piece in range(len(row)):
+            if row[piece] == player or row[piece] == '-':
+                placed.append(piece + 1)
+        if len(placed) == 0:
+            return 0
+        placedPieces.append(placed)
+
+    count = 0
+
+    if 1 in placedPieces[0]:
+        if 2 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+        if 3 in placedPieces[1]:
+            if 2 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+        if 4 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+            if 2 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+    if 2 in placedPieces[0]:
+        if 1 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+        if 3 in placedPieces[1]:
+            if 1 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+        if 4 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+            if 1 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+    if 3 in placedPieces[0]:
+        if 1 in placedPieces[1]:
+            if 2 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+        if 2 in placedPieces[1]:
+            if 1 in placedPieces[2]:
+                if 4 in placedPieces[3]:
+                    count += 1
+            if 4 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+        if 4 in placedPieces[1]:
+            if 2 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+            if 1 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+    if 4 in placedPieces[0]:
+        if 1 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+            if 2 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+        if 3 in placedPieces[1]:
+            if 1 in placedPieces[2]:
+                if 2 in placedPieces[3]:
+                    count += 1
+            if 2 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+        if 2 in placedPieces[1]:
+            if 3 in placedPieces[2]:
+                if 1 in placedPieces[3]:
+                    count += 1
+            if 1 in placedPieces[2]:
+                if 3 in placedPieces[3]:
+                    count += 1
+
+    return count
 
 def Max(board):
     win = winState(board, 'O')
