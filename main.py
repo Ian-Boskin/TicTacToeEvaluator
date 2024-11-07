@@ -250,7 +250,7 @@ def Max(board):
         return 1, 0, board
     maxNode = -1
     nodeCount = 0
-    nextBoard = [[],[],[],[]]
+    nextMove = (0,0)
     nextCount = sys.maxsize
     for row in range(4):
         for piece in range(4):
@@ -262,12 +262,11 @@ def Max(board):
                     if newNode > maxNode:
                         maxNode = newNode
                     if count < nextCount:
-                        for rowIdx in range(4):
-                            nextBoard[rowIdx] = board[rowIdx].copy()
+                        nextMove = (row, piece)
                         nextCount = count
                 board[row][piece] = '-'
 
-    return nodeCount, maxNode, nextBoard
+    return nodeCount, maxNode, nextMove
 
 def Min(board):
     win = winState(board, 'X')
@@ -277,7 +276,7 @@ def Min(board):
         return 1, 0, board
     minNode = 1
     nodeCount = 1
-    nextBoard = [[],[],[],[]]
+    nextMove = (0,0)
     nextCount = sys.maxsize
     for row in range(4):
         for piece in range(4):
@@ -289,12 +288,11 @@ def Min(board):
                     if newNode < minNode:
                         minNode = newNode
                     if count < nextCount:
-                        for rowIdx in range(4):
-                            nextBoard[rowIdx] = board[rowIdx].copy()
+                        nextMove = (row, piece)
                         nextCount = count
                 board[row][piece] = '-'
 
-    return nodeCount, minNode, nextBoard
+    return nodeCount, minNode, nextMove
 
 
 main()
