@@ -21,9 +21,9 @@ def main():
     #     return -1
 
     if XCount == OCount:
-        count, win, nextMove = Max(board)
+        count, win, nextMove = MaxCutoff(board, 5)
     else:
-        count, win, nextMove = Min(board)
+        count, win, nextMove = MinCutoff(board, 5)
 
     print(count)
     print(win)
@@ -245,25 +245,26 @@ def possibleWins(board, player):
 def Max(board):
     win = winState(board, 'O')
     if win == 1:
-        return 1, -1, board
+        return 1, -1, (-1,-1)
     if win == 0:
-        return 1, 0, board
+        return 1, 0, (-1,-1)
     maxNode = -1
     nodeCount = 0
-    nextMove = (0,0)
-    nextCount = sys.maxsize
+    nextMove = (-1,-1)
+    # nextCount = sys.maxsize
     for row in range(4):
         for piece in range(4):
             if board[row][piece] == '-':
                 board[row][piece] = 'X'
                 count, newNode, newCopy = Min(board)
                 nodeCount += count
-                if newNode >= maxNode:
-                    if newNode > maxNode:
-                        maxNode = newNode
-                    if count < nextCount:
-                        nextMove = (row, piece)
-                        nextCount = count
+                if newNode > maxNode:
+                    maxNode = newNode
+                    nextMove = (row, piece)
+                #     nextCount = count
+                # elif newNode == maxNode and count < nextCount:
+                #     nextMove = (row, piece)
+                #     nextCount = count
                 board[row][piece] = '-'
 
     return nodeCount, maxNode, nextMove
@@ -271,25 +272,90 @@ def Max(board):
 def Min(board):
     win = winState(board, 'X')
     if win == 1:
-        return 1, 1, board
+        return 1, 1, (-1,-1)
     if win == 0:
-        return 1, 0, board
+        return 1, 0, (-1,-1)
     minNode = 1
     nodeCount = 1
     nextMove = (0,0)
-    nextCount = sys.maxsize
+    # nextCount = sys.maxsize
     for row in range(4):
         for piece in range(4):
             if board[row][piece] == '-':
                 board[row][piece] = 'O'
                 count, newNode, newCopy = Max(board)
                 nodeCount += count
-                if newNode <= minNode:
-                    if newNode < minNode:
-                        minNode = newNode
-                    if count < nextCount:
-                        nextMove = (row, piece)
-                        nextCount = count
+                if newNode < minNode:
+                    minNode = newNode
+                    nextMove = (row, piece)
+                #     nextCount = count
+                # elif newNode == minNode and count < nextCount:
+                #     nextMove = (row, piece)
+                #     nextCount = count
+                board[row][piece] = '-'
+
+    return nodeCount, minNode, nextMove
+
+def MaxCutoff(board, k):
+    win = winState(board, 'O')
+    if win == 1:
+        return 1, -100, (-1,-1)
+    if win == 0:
+        return 1, 0, (-1,-1)
+    if k == 0:
+        Xwins = possibleWins(board, 'X')
+        Owins = possibleWins(board, 'O')
+        return 1, Xwins-Owins, (-1,-1)
+    maxNode = -100
+    nodeCount = 0
+    nextMove = (-1,-1)
+    # nextCount = 0
+    for row in range(4):
+        for piece in range(4):
+            if board[row][piece] == '-':
+                board[row][piece] = 'X'
+                count, newNode, newCopy = MinCutoff(board , k-1)
+                nodeCount += count
+                if newNode > maxNode:
+                    maxNode = newNode
+                    nextMove = (row, piece)
+                #     nextCount = count
+                # elif newNode == maxNode and count > nextCount:
+                #     nextMove = (row, piece)
+                #     nextCount = count
+                board[row][piece] = '-'
+
+    return nodeCount, maxNode, nextMove
+
+def MinCutoff(board, k):
+    win = winState(board, 'X')
+    if win == 1:
+        return 1, 100, (-1,-1)
+    if win == 0:
+        return 1, 0, (-1,-1)
+    if k == 0:
+        Xwins = possibleWins(board, 'X')
+        Owins = possibleWins(board, 'O')
+        return 1, Xwins-Owins, (-1,-1)
+    minNode = 100
+    nodeCount = 1
+    nextMove = (0,0)
+    # nextCount = 0
+    for row in range(4):
+        for piece in range(4):
+            if board[row][piece] == '-':
+                board[row][piece] = 'O'
+                count, newNode, newCopy = MaxCutoff(board, k-1)
+                # if k == 5:
+                #     print(count, newNode, (row, piece), newCopy, sep=' ')
+                nodeCount += count
+                if newNode < minNode:
+                    minNode = newNode
+                    nextMove = (row, piece)
+                #     nextCount = count
+                # elif newNode == minNode and count > nextCount:
+                #     nextMove = (row, piece)
+                #     nextCount = count
                 board[row][piece] = '-'
 
     return nodeCount, minNode, nextMove
